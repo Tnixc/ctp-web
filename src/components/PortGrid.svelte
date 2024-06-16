@@ -20,12 +20,6 @@
 
   // const urlParams = new URLSearchParams(window.location.search);
   // const query = urlParams.get("q");
-  function removeItemByValue(arr, value) {
-    const index = arr.indexOf(value);
-    if (index > -1) {
-      arr.splice(index, 1);
-    }
-  }
 
   let debounceTimeout: NodeJS.Timeout;
   let searchTerm: string = "";
@@ -53,7 +47,7 @@
       <slot name="no-results"></slot>
     {:else if portGrid.length > 0}
       {#each portGrid as fields (fields.key)}
-          <div style={`display: ${portGridCopy.includes(fields) ? "block": "none"}`}>
+        <div style={`display: ${portGridCopy.includes(fields) ? "block" : "none"}`} class="port-card-container">
           <PortCard
             title={fields.name}
             link={fields["is-userstyle"]
