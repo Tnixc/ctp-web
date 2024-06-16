@@ -6,6 +6,7 @@
 
   export let ports: Array<Port | Userstyle>;
   let portGrid: Array<Port | Userstyle> = ports;
+  let portGridCopy: Array<Port | Userstyle> = ports;
 
   const fuse = new Fuse(ports, {
     keys: [
@@ -19,14 +20,20 @@
 
   // const urlParams = new URLSearchParams(window.location.search);
   // const query = urlParams.get("q");
+  function removeItemByValue(arr, value) {
+    const index = arr.indexOf(value);
+    if (index > -1) {
+      arr.splice(index, 1);
+    }
+  }
 
   let debounceTimeout: NodeJS.Timeout;
   let searchTerm: string = "";
   function handleInput() {
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(() => {
-      searchTerm ? (portGrid = fuse.search(searchTerm).map((key) => key.item)) : (portGrid = ports);
-    }, 125);
+      searchTerm ? (portGridCopy = fuse.search(searchTerm).map((key) => key.item)) : (portGridCopy = ports);
+    }, 0);
   }
 </script>
 
@@ -46,14 +53,16 @@
       <slot name="no-results"></slot>
     {:else if portGrid.length > 0}
       {#each portGrid as fields (fields.key)}
-        <PortCard
-          title={fields.name}
-          link={fields["is-userstyle"]
-            ? `https://github.com/catppuccin/userstyles/tree/main/styles/${fields.key}`
-            : fields.repository.url}
-          icon={fields.icon}
-          categories={fields.categories}
-          color={fields.color} />
+          <div style={`display: ${portGridCopy.includes(fields) ? "block": "none"}`}>
+          <PortCard
+            title={fields.name}
+            link={fields["is-userstyle"]
+              ? `https://github.com/catppuccin/userstyles/tree/main/styles/${fields.key}`
+              : fields.repository.url}
+            icon={fields.icon}
+            categories={fields.categories}
+            color={fields.color} />
+        </div>
       {/each}
     {/if}
   {/key}
